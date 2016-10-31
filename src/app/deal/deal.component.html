@@ -1,0 +1,68 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1">
+            <form [formGroup]="dealForm" (ngSubmit)="onSubmit()">
+                <div class="row text-center form-group dealFolderDiv">
+                    <h3>Deal Folder Creation</h3>
+
+                    <div class="col-xs-12 divpadding">
+                        <label for="dealName">Existing Deal Name</label>
+                        <br>
+                        <select id="dealName" class="form-control ctrl-padding" formControlName="dealName"
+                                (change)="pickExistingDeal($event.target.value)" #dealName>
+                            <option></option>
+                            <option *ngFor="let deal of existingDeals" value="{{deal.dealType}}">{{deal.name}}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-xs-12 divpadding">
+                        <label for="newDealName">New Deal Name</label>
+                        <br>
+                        <input type="text" id="newDealName" class="form-control ctrl-padding" formControlName="newDealName"
+                               (keyup)="valueChanged($event.target.value)" #newDealName>
+                        <br>
+                        <label for="dealType">Deal Type</label>
+                        <br>
+                        <select id="dealType" class="form-control ctrl-padding" fomrControlName="dealType" #dealType
+                                (change)="valueChanged($event.target.value)">
+                            <option></option>
+                            <option *ngFor="let type of dealTypes" value="{{type.id}}">{{type.name}}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-xs-12 divpadding">
+                        <label for="leadAnalyst">Lead Analyst</label>
+                        <br>
+                        <select id="leadAnalyst" class="form-control ctrl-padding" fomrControlName="leadAnalyst" #leadAnalyst (change)="isValid()">
+                            <option></option>
+                            <option *ngFor="let analyst of analysts">{{analyst.name}}</option>
+                        </select>
+                        <br>
+                        <div class="inline-field">
+                            <label for="analystFavorite">Mark as Favorite:</label>
+                            <input type="checkbox" id="analystFavorite" formControlName="analystFavorite"
+                                   style="height: 18px; width: 18px;" #analystFavorite>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="padding-top: 20px">
+                    <div class="col-xs-12">
+                        <div class="col-xs-3 no-pad">
+                            <img src="/assets/images/msi.png">
+                        </div>
+
+                        <div class="col-xs-6">
+                            <button type="submit" class="btn btn-primary btn-sm center-block" [disabled]="isValid()">Create</button>
+                        </div>
+
+                        <div class="col-xs-3 no-pad">
+                            <img src="/assets/images/box.png" class="pull-right">
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

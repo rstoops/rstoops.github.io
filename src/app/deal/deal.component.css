@@ -1,0 +1,57 @@
+.buttons {
+    position: fixed;
+    bottom: 0%;
+    margin-bottom: 3px;
+    margin-right:0 !important;
+    margin-left:0 !important;
+    padding-right:0 !important;
+    padding-left:0 !important;
+}
+
+.dealFolderDiv {
+    background-color: #63bffa;
+    color: black
+}
+
+.no-pad {
+    /*margin-right:0 !important;*/
+    /*margin-left:0 !important;*/
+    /*padding-right:0 !important;*/
+    /*padding-left:0 !important;*/
+}
+
+.ctrl-padding {
+    width: 90%;
+    margin-left: 15px;
+}
+
+.divpadding {
+    border-bottom: solid 1px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+select {
+    height: 28px;
+    padding: 5px !important;
+}
+
+input[type="text"] {
+    height: 28px;
+    padding: 5px !important;
+}
+
+.inline-field input,
+.inline-field label {
+    display: inline-block;
+    margin-bottom: 0; /* I added this after I posted my reply */
+    vertical-align: middle; /* Fixes any weird issues in Firefox and IE */
+}
+
+h4 {
+    color: yellow;
+}
+
+label h3 {
+    color: #303030;
+}
