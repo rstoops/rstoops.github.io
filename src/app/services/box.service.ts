@@ -43,7 +43,7 @@ export class BoxService {
     }
 
     findFolders() {
-        let searchUrl = this.folderSearch.replace('{folderName}', encodeURIComponent(this.box.getDealTypesFolderName()));
+        let searchUrl = this.folderSearch.replace('{folderName}', encodeURI(this.box.getDealTypesFolderName()));
         this.http.get(searchUrl, {headers: this.headers})
             .map((response: Response) => response.json())
             .subscribe(
@@ -53,7 +53,7 @@ export class BoxService {
                 }
             );
 
-        searchUrl = this.folderSearch.replace('{folderName}', encodeURIComponent(this.box.getDealsFolderName()));
+        searchUrl = this.folderSearch.replace('{folderName}', encodeURI(this.box.getDealsFolderName()));
         this.http.get(searchUrl, {headers: this.headers})
             .map((response: Response) => response.json())
             .subscribe(
@@ -62,7 +62,7 @@ export class BoxService {
     }
 
     getDealTypes() {
-        let searchUrl = this.folderList.replace('{id}', encodeURIComponent(this.box.folderTemplateId));
+        let searchUrl = this.folderList.replace('{id}', encodeURI(this.box.folderTemplateId));
         return this.http.get(searchUrl, {headers: this.headers})
             .map((response: Response) => response.json());
     }
@@ -103,9 +103,9 @@ export class BoxService {
     }
 
     private _addToFaviroites(favoritesId: string, folderId: string) {
-        let url = this.putCollectionUrl.replace('{folderId}',folderId);
+        let url = this.putCollectionUrl.replace('{folderId}', folderId);
         let data = {
-            'collections' : [{ 'id' : favoritesId}]
+            'collections': [{'id': favoritesId}]
         };
 
         this.http.put(url, data, {headers: this.headers})

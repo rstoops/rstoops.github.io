@@ -11,7 +11,7 @@ export class DealCompleteComponent {
   constructor(private router: Router) { }
 
   onBack() {
-      this.router.navigate(['deal']);
+      this.router.navigate(['/deal']);
   }
 
 }

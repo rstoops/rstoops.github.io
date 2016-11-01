@@ -9,7 +9,6 @@ import { DealService } from "./services/deal.service";
 import { routing } from "./app.routing";
 import { DealCompleteComponent } from './deal/deal-complete.component';
 import { BoxHomeComponent } from './box/box-home.component';
-import { BoxTokenComponent } from './box/box-token.component';
 import { BoxService } from "./services/box.service";
 import { Box } from "./box/box";
 import { Dealdata } from "./models/dealdata";
@@ -20,9 +19,7 @@ import { DealAddingComponent } from './deal/deal-adding.component';
     AppComponent,
     DealComponent,
     DealCompleteComponent,
-    BoxTokenComponent,
     BoxHomeComponent,
-    BoxTokenComponent,
     DealAddingComponent
   ],
   imports: [
