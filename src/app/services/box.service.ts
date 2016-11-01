@@ -1,10 +1,11 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, OnDestroy } from '@angular/core';
 import { Response, Http, Headers } from "@angular/http";
 import { Box } from "../box/box";
 import "rxjs";
+import { Subscription } from "rxjs";
 
 @Injectable()
-export class BoxService {
+export class BoxService implements OnDestroy {
     private headers: Headers;
     private tokenUrl: string = 'https://api.box.com/oauth2/token';
     private createFolderUrl: string = 'https://api.box.com/2.0/folders';
@@ -15,21 +16,25 @@ export class BoxService {
     private folderSearch: string = 'https://api.box.com/2.0/search?query={folderName}&type=folder';
     private folderList: string = 'https://api.box.com/2.0/folders/{id}';
 
+    private findFoldersSubscription: Subscription;
+    private folderSearchSubscription: Subscription;
+    private addToFavoritesSubscription: Subscription;
+
     foldersFound = new EventEmitter<any>();
 
     constructor(private http: Http, private box: Box) {
     }
 
-    getToken(code: string) {
+    getToken(code: string, redirectUrl: string) {
         let headers = new Headers({
             'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
         });
 
         let data = 'grant_type=authorization_code&code=' + code +
             '&client_id=' + this.box.getClientId() + '&client_secret=' +
-            this.box.getClientSecret() + encodeURI(this.box.getRedirect());
+            this.box.getClientSecret() + "&redirect_uri=" + encodeURI(redirectUrl);
 
-        return this.http.post(this.tokenUrl, data, {
+           return this.http.post(this.tokenUrl, data, {
                 headers: headers
             }
         ).map((response: Response) => response.json());
@@ -44,7 +49,8 @@ export class BoxService {
 
     findFolders() {
         let searchUrl = this.folderSearch.replace('{folderName}', encodeURI(this.box.getDealTypesFolderName()));
-        this.http.get(searchUrl, {headers: this.headers})
+
+        this.findFoldersSubscription = this.http.get(searchUrl, {headers: this.headers})
             .map((response: Response) => response.json())
             .subscribe(
                 (data: any) => {
@@ -54,7 +60,8 @@ export class BoxService {
             );
 
         searchUrl = this.folderSearch.replace('{folderName}', encodeURI(this.box.getDealsFolderName()));
-        this.http.get(searchUrl, {headers: this.headers})
+
+        this.folderSearchSubscription = this.http.get(searchUrl, {headers: this.headers})
             .map((response: Response) => response.json())
             .subscribe(
                 (data: any) => this.box.folderDealsId = data.entries[0].id
@@ -95,14 +102,14 @@ export class BoxService {
     }
 
     addToFavorites(folderId: string) {
-        this.http.get(this.getCollectionsUrl, {headers: this.headers})
+        this.addToFavoritesSubscription = this.http.get(this.getCollectionsUrl, {headers: this.headers})
             .map((response: Response) => response.json())
             .subscribe((data: any) => {
-                this._addToFaviroites(data.entries[0].id, folderId);
+                this._addToFavorites(data.entries[0].id, folderId);
             });
     }
 
-    private _addToFaviroites(favoritesId: string, folderId: string) {
+    private _addToFavorites(favoritesId: string, folderId: string) {
         let url = this.putCollectionUrl.replace('{folderId}', folderId);
         let data = {
             'collections': [{'id': favoritesId}]
@@ -110,5 +117,11 @@ export class BoxService {
 
         this.http.put(url, data, {headers: this.headers})
             .subscribe();
+    }
+
+    ngOnDestroy() {
+        this.findFoldersSubscription.unsubscribe();
+        this.folderSearchSubscription.unsubscribe();
+        this.addToFavoritesSubscription.unsubscribe();
     }
 }

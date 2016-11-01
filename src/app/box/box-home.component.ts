@@ -16,9 +16,12 @@ export class BoxHomeComponent implements OnDestroy {
             (data: any) => router.navigate(['deal'])
         );
 
+        let values = window.location.href.split('/?');
+        let redirectUrl = values[0];
+
         let code = this.route.snapshot.queryParams['code'];
 
-        this.subscription = boxService.getToken(code).subscribe(
+        this.subscription = boxService.getToken(code, redirectUrl).subscribe(
             (data: any) => {
                 boxService.setAccessToken(data.access_token);
                 boxService.findFolders();

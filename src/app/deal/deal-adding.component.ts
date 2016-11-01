@@ -12,12 +12,14 @@ import { Box } from "../box/box";
 })
 export class DealAddingComponent implements OnInit, OnDestroy {
     private subscripeCreateFolder: Subscription;
+    private subscripeCopyFolder: Subscription;
+    private subscripeCopyFolders: Subscription;
 
     constructor(private dealData: Dealdata, private box: Box, private boxService: BoxService, private router: Router) {
     }
 
     copyFolders(dealId) {
-        this.boxService.getDealFolders(this.dealData.templateFolderId)
+        this.subscripeCopyFolders = this.boxService.getDealFolders(this.dealData.templateFolderId)
             .subscribe((data: any) => {
                     for (let i = 0 ; i < data.total_count ; i++) {
                         this.copyFolder(dealId, data.entries[i].id);
@@ -30,7 +32,7 @@ export class DealAddingComponent implements OnInit, OnDestroy {
     }
 
     copyFolder(targetId: string, sourceId: string) {
-        this.boxService.copyToFolder(targetId, sourceId)
+        this.subscripeCopyFolder = this.boxService.copyToFolder(targetId, sourceId)
             .subscribe();
     }
 
@@ -47,6 +49,8 @@ export class DealAddingComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscripeCreateFolder.unsubscribe();
+        this.subscripeCopyFolder.unsubscribe();
+        this.subscripeCopyFolders.unsubscribe();
     }
 
 }
