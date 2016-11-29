@@ -14,6 +14,7 @@
 .project
 .classpath
 *.launch
+*.iml
 .settings/
 
 # misc
@@ -33,3 +34,4 @@ testem.log
 .DS_Store
 Thumbs.db
 /dist/
+deal-data.json
