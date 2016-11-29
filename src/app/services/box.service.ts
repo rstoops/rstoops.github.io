@@ -18,7 +18,6 @@ export class BoxService implements OnDestroy {
 
     private findFoldersSubscription: Subscription;
     private folderSearchSubscription: Subscription;
-    private addToFavoritesSubscription: Subscription;
 
     foldersFound = new EventEmitter<any>();
 
@@ -102,7 +101,7 @@ export class BoxService implements OnDestroy {
     }
 
     addToFavorites(folderId: string) {
-        this.addToFavoritesSubscription = this.http.get(this.getCollectionsUrl, {headers: this.headers})
+        return this.http.get(this.getCollectionsUrl, {headers: this.headers})
             .map((response: Response) => response.json())
             .subscribe((data: any) => {
                 this._addToFavorites(data.entries[0].id, folderId);
@@ -122,6 +121,5 @@ export class BoxService implements OnDestroy {
     ngOnDestroy() {
         this.findFoldersSubscription.unsubscribe();
         this.folderSearchSubscription.unsubscribe();
-        this.addToFavoritesSubscription.unsubscribe();
     }
 }

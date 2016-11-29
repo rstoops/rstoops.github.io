@@ -11,46 +11,46 @@ import { Box } from "../box/box";
     styleUrls: ['./deal.component.css']
 })
 export class DealAddingComponent implements OnInit, OnDestroy {
-    private subscripeCreateFolder: Subscription;
-    private subscripeCopyFolder: Subscription;
-    private subscripeCopyFolders: Subscription;
+    private subscriptions: Subscription[] = [];
 
     constructor(private dealData: Dealdata, private box: Box, private boxService: BoxService, private router: Router) {
     }
 
     copyFolders(dealId) {
-        this.subscripeCopyFolders = this.boxService.getDealFolders(this.dealData.templateFolderId)
-            .subscribe((data: any) => {
-                    for (let i = 0 ; i < data.total_count ; i++) {
-                        this.copyFolder(dealId, data.entries[i].id);
-                    }
-
-                    this.router.navigate(['/deal-added']);
-                }
-            );
-
+        this.subscriptions.push(this.boxService.getDealFolders(this.dealData.templateFolderId)
+            .subscribe((data: any) => this.processFolders(dealId, data)));
     }
 
-    copyFolder(targetId: string, sourceId: string) {
-        this.subscripeCopyFolder = this.boxService.copyToFolder(targetId, sourceId)
-            .subscribe();
+    processFolders(dealId, data) {
+        let foldersCreated: number = 0;
+
+        for (let i = 0 ; i < data.total_count ; i++) {
+            this.subscriptions.push(this.boxService.copyToFolder(dealId, data.entries[i].id)
+                .subscribe(
+                    () => {
+                        if (++foldersCreated === data.total_count) {
+                            this.router.navigate(['/deal-added']);
+                        }
+                    }
+                ));
+        }
     }
 
     ngOnInit() {
-        this.subscripeCreateFolder = this.boxService.createFolder(this.dealData.dealName, this.box.folderDealsId).subscribe(
+        this.subscriptions.push(this.boxService.createFolder(this.dealData.dealName, this.box.folderDealsId).subscribe(
             (data: any) => {
                 if (this.dealData.addAsFavorite) {
-                    this.boxService.addToFavorites(data.id);
+                    this.subscriptions.push(this.boxService.addToFavorites(data.id));
                 }
                 this.copyFolders(data.id);
             }
-        )
+        ));
     }
 
     ngOnDestroy() {
-        this.subscripeCreateFolder.unsubscribe();
-        this.subscripeCopyFolder.unsubscribe();
-        this.subscripeCopyFolders.unsubscribe();
+        for (let subscription of this.subscriptions) {
+            subscription.unsubscribe();
+        }
     }
 
 }
